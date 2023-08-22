@@ -348,3 +348,12 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+SimANS/best_simans_ckpt/NQ/checkpoint-30000
+SimANS/best_simans_ckpt/NQ/log.txt
+SimANS/ckpt/NQ/checkpoint-reranker26000
+SimANS/ckpt/NQ/nq_fintinue.pkl
+SimANS/data/NQ/dev_ce_0.json
+SimANS/data/NQ/nq-dev.qa.csv
+SimANS/data/NQ/nq-test.qa.csv
+SimANS/data/NQ/nq-train.qa.csv
+SimANS/data/NQ/train_ce_0.json

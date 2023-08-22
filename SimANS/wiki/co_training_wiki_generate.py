@@ -319,7 +319,8 @@ def main():
     renew_tools = RenewTools(passages_path=args.passage_path, tokenizer=tokenizer,
                              output_dir=args.ann_dir, temp_dir=temp_slice_dir)
     # renew_tools = None
-    dist.barrier()
+    if args.local_rank != -1:
+        dist.barrier()
     global_step = args.global_step
     if global_step > args.max_steps:
         pass

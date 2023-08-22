@@ -572,7 +572,7 @@ class TraditionDataset(Dataset):
     def load_data(self):
         with open(self.file_path, 'r', encoding="utf-8") as f:
             data = json.load(f)
-            print('Aggregated data size: {}'.format(len(data)))
+            print('读取的数据集条数: {}'.format(len(data)))
         # filter those without positive ctx
         pre_data = [r for r in data if len(r["positive_ctxs"]) > 0]
         logger.info("cleaned data size: {} after positive ctx".format(len(pre_data)))

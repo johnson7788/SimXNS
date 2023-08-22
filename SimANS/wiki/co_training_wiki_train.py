@@ -676,7 +676,8 @@ def main():
     # logger.addHandler(sh)
     logger.setLevel(logging.INFO if args.local_rank in [-1, 0] else logging.WARN)
     print(logger)
-    dist.barrier()
+    if args.local_rank != -1:
+        dist.barrier()
     global_step = args.global_step
     # eval_first(args,model,0,renew_tools)
     if global_step >= args.max_steps:

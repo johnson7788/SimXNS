@@ -107,7 +107,7 @@ pip install tensorboardX
 pip install lmdb
 pip install datasets
 pip install wandb
-pip install sklearn
+pip install scikit-learn
 pip install boto3
 ```
 
