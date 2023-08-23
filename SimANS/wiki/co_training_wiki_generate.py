@@ -275,7 +275,7 @@ def get_new_dataset(args,model,global_step,renew_tools):
     # model.to(args.device)
     with torch.no_grad():
         passage_embedding, passage_embedding_id = renew_tools.get_passage_embedding(args, model)
-        torch.distributed.barrier()
+        # torch.distributed.barrier()
         if is_first_worker():
             train_q,train_a,train_q_embed, train_q_embed2id = renew_tools.get_question_embedding(args,
                                                     model,args.train_qa_path,mode='train')

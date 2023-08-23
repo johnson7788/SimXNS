@@ -7,9 +7,9 @@ CE_CKPT_PATH=ckpt/NQ/checkpoint-reranker26000
 Origin_Data_Dir=data/NQ/train_ce_0.json
 Origin_Data_Dir_Dev=data/NQ/dev_ce_0.json
 
-Iteration_step=2000
-Iteration_reranker_step=500
-MAX_STEPS=30000
+Iteration_step=20
+Iteration_reranker_step=5
+MAX_STEPS=100
 
 # for global_step in `seq 0 2000 $MAX_STEPS`; do echo $global_step; done;
 for global_step in `seq 0 $Iteration_step $MAX_STEPS`;

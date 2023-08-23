@@ -301,7 +301,7 @@ def train(args, model, reranker_model, tokenizer, global_step=0):
                 if is_first_worker():
                     _save_checkpoint(args, model, optimizer, scheduler, global_step)
                     _save_reranker_checkpoint(args, reranker_model, reranker_optimizer, reranker_scheduler, global_step)
-                torch.distributed.barrier()
+                # torch.distributed.barrier()
                 train_flag = 1
                 break
             if args.save_steps > 0 and global_step % args.save_steps == 0:

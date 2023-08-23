@@ -234,26 +234,21 @@ class RenewTools:
                 os.makedirs(output_dir)
             if not os.path.exists(temp_dir):
                 os.makedirs(temp_dir)
-        dist.barrier()
+        # dist.barrier()
 
     def get_passage_embedding(self, args, model):
         if args.load_cache:
             pass
         else:
-            shard_size = len(self.passages) // args.world_size
-            start_idx = args.rank * shard_size
-            end_idx = start_idx + shard_size
-            if args.rank == args.world_size - 1:
-                end_idx = len(self.passages)
-            passages_piece = self.passages[start_idx:end_idx]
-            logger.info(f'Embedding generation for {len(passages_piece)} passages from idx {start_idx} to {end_idx}')
+            passages_piece = self.passages
+            logger.info(f'Embedding generation for {len(passages_piece)} passages')
             allids, allembeddings = embed_passages(args, passages_piece, model, self.tokenizer)
             pickle_path = os.path.join(self.temp_dir,
-                                       "{1}_data_obj_{0}.pb".format(str(args.rank), 'psg_embed'))
+                                       "{1}_data_obj_{0}.pb".format(0, 'psg_embed'))
             with open(pickle_path, 'wb') as handle:
                 pickle.dump(allembeddings, handle, protocol=4)
             pickle_path = os.path.join(self.temp_dir,
-                                       "{1}_data_obj_{0}.pb".format(str(args.rank), 'psg_embed_id'))
+                                       "{1}_data_obj_{0}.pb".format(0, 'psg_embed_id'))
             with open(pickle_path, 'wb') as handle:
                 pickle.dump(allids, handle, protocol=4)
             logger.info(f'Total passages processed {len(allids)}. Written to {pickle_path}.')
@@ -263,13 +258,13 @@ class RenewTools:
             logger.info('load_passage_begin')
             passage_embedding_list = []
             passage_embedding_id_list = []
-            for i in tqdm(range(args.world_size)):  # TODO: dynamically find the max instead of HardCode
+            for i in tqdm(range(1)):  # TODO: dynamically find the max instead of HardCode
                 pickle_path = os.path.join(self.temp_dir, "{1}_data_obj_{0}.pb".format(str(i), 'psg_embed'))
                 with open(pickle_path, 'rb') as handle:
                     b = pickle.load(handle)
                     passage_embedding_list.append(b)
             logger.info('load_passage_id_begin')
-            for i in tqdm(range(args.world_size)):  # TODO: dynamically find the max instead of HardCode
+            for i in tqdm(range(1)):  # TODO: dynamically find the max instead of HardCode
                 pickle_path = os.path.join(self.temp_dir, "{1}_data_obj_{0}.pb".format(str(i), 'psg_embed_id'))
                 with open(pickle_path, 'rb') as handle:
                     b = pickle.load(handle)
@@ -331,15 +326,19 @@ class RenewTools:
         logger.info("***** end build index  *****")
         return gpu_index_flat, passage_embedding2id
 
-    def load_passage(self, passage_path):
+    def load_passage(self, passage_path, limit=-1):
         if not os.path.exists(passage_path):
             logger.info(f'{passage_path} does not exist')
             return
         logger.info(f'Loading passages from: {passage_path}')
         passages = []
+        total = 0
         with open(passage_path) as fin:
             reader = csv.reader(fin, delimiter='\t')
             for k, row in enumerate(reader):
+                total += 1
+                if limit !=-1 and total > limit:
+                    break
                 if not row[0] == 'id':
                     try:
                         passages.append((int(row[0]) - 1,row[1], row[2]))
